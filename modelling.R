@@ -335,6 +335,4 @@ class[which(is.na(class))] <- c(1, 0, 0, 0, 0,
 
 submit <- data.frame('SK_ID_CURR' = test2$id, 'TARGET' = class)
 write.csv(submit, 'glm1.csv', row.names = F)
-# 0.335...
-
 
