@@ -1,0 +1,255 @@
+- Divide features into 4 categories:
+	1. personal informations, i.e. occupation, education etc.
+	2. contract informations, 
+	3. building informations
+	4. suspecious informations
+
+- fit in a tree
+- check the importance
+- see if i want to drop the missing values
+
+
+
+
+- Region
+
+if checking vif, we see that there are slightly high numbers around
+address not match.
+
+we check the correlation closely, we see that not match within city
+is more correlated than region not match.
+We can make assumptions that, it's rarer that people move to other city
+as each city is far from each other
+WHAT DO I DO? 
+I try to combine them in different ways
+then select the ones that give the highest correlation
+
+1. combining region
+2. combiniig city
+3. combingin all (BEST!)
+
+ONE IMPORTANT THING:
+check the correlation first
+if the sign is opposite do unify them otherwise the effects cancel out
+
+
+so i dropped others but 'all'
+
+
+1. split datasets into 10000, 40000
+2. check variance - especially there are some that has zero variance
+3. split into two areas: personal informations, house related informations
+0. group up documents in personal info, gaining higher correlation
+4. check VIF of personal informations
+   multicollinearity detected and dropped
+
+
+
+
+
+
+
+
+- Documents:
+though no missing values there are columns with no variance
+
+- detect interaction effects
+
+did the same i did to not_match
+but didn't turn out good, as correlation not much improved and
+smaller than one variable
+
+so i fit a logistic model and see who contributed more
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+house
+
+I chose to take the average
+as i don't think one's living area would likely have big fluctuation (e.g. outliers.)
+
+
+
+
+
+
+
+
+
+
+
+
+amount goods price
+amount credit
+since they are highly correlated
+i decide to aggregate them 
+
+what i do: goods price - credit
+	1. borrow exact amount of goods price
+ then: 2 features:
+	1. borrow exactly (y/n)
+	2. amount of excessive loan
+
+what to check:
+ in three groups: exact amount, excessive, less
+	whats the ratio of default.
+
+
+
+
+
+
+
+
+
+AMT_REQ_CREDIT_BUREAU_HOUR    0.006949
+AMT_REQ_CREDIT_BUREAU_DAY     0.010797
+AMT_REQ_CREDIT_BUREAU_WEEK    0.007225
+AMT_REQ_CREDIT_BUREAU_MON    -0.014910
+AMT_REQ_CREDIT_BUREAU_QRT     0.001430
+AMT_REQ_CREDIT_BUREAU_YEAR    0.013847
+
+
+
+
+
+i took away xxx features and put in xxx features
+for the xxx i put in, it could be a summary of a number of columns
+or aggregation from another table
+
+
+
+
+
+
+
+missing value computation:
+I use domain knowledge to choose variables for modelling
+
+FLAG_OWN_CAR: with a car, you might need a larger 
+
+Although there are almost half the data missing
+it's dangerous if we naively withdraw the missing rows
+as we have to assist if the missing values are missing random or not
+
+so we make flags of the missing rows first
+and see if it correlates with y
+
+
+
+APARTMENTS_AVG                0.493166
+BASEMENTAREA_AVG              0.455682
+YEARS_BUILD_AVG               0.200560
+COMMONAREA_AVG                0.283390
+ELEVATORS_AVG                 0.346000
+ENTRANCES_AVG                 0.500792
+FLOORSMAX_AVG                 0.223796
+FLOORSMIN_AVG                 0.190589
+LANDAREA_AVG                  1.000000
+NONLIVINGAPARTMENTS_AVG       0.064817
+NONLIVINGAREA_AVG             0.158409
+
+我自己是覺得房子的大小跟貸款還不還的關係已經在房價時包含進去了
+
+
+
+---------------------------------------------------------------------
+
+- done training main set
+- use featuretools on the second table
+
+- collect good codes
+- make pipeline
+
+- make powerpoints
+
+
+
+########## imputation
+
+i first use median to impute all numeric columns containing missing values
+some of the features such as obs30 and def30 improves the correlation
+some not such as e1e2e3
+so i left the obs30, but will fit a model for e1e2e3
+
+------ i built a model for ext_sources
+
+tree
+not validated but checked with correlation
+if the correlation improves then
+even it's not accurate it still helps the direction of prediction
+so i save it
+
+
+
+
+
+
+
+
+
+
+
+
+CNT_CHILDREN                   0.035922
+AMT_INCOME_TOTAL              -0.024181
+AMT_ANNUITY                   -0.015849
+REGION_POPULATION_RELATIVE    -0.033020
+DAYS_BIRTH                     0.093312
+DAYS_EMPLOYED                 -0.037426
+DAYS_REGISTRATION              0.053231
+DAYS_ID_PUBLISH                0.070535
+OWN_CAR_AGE                    0.036079
+FLAG_EMP_PHONE                 0.038724
+FLAG_WORK_PHONE                0.004657
+FLAG_CONT_MOBILE               0.003485
+FLAG_PHONE                    -0.034595
+FLAG_EMAIL                     0.006199
+CNT_FAM_MEMBERS                0.023029
+REGION_RATING_CLIENT           0.069991
+HOUR_APPR_PROCESS_START       -0.033446
+EXT_SOURCE_1                  -0.164953
+EXT_SOURCE_2                  -0.170762
+EXT_SOURCE_3                  -0.198362
+OBS_30_CNT_SOCIAL_CIRCLE       0.021847
+DEF_30_CNT_SOCIAL_CIRCLE       0.052609
+DAYS_LAST_PHONE_CHANGE         0.067106
+AMT_REQ_CREDIT_BUREAU_HOUR     0.006949
+AMT_REQ_CREDIT_BUREAU_DAY      0.010797
+AMT_REQ_CREDIT_BUREAU_WEEK     0.007225
+AMT_REQ_CREDIT_BUREAU_MON     -0.014910
+AMT_REQ_CREDIT_BUREAU_QRT      0.001430
+AMT_REQ_CREDIT_BUREAU_YEAR     0.013847
+notmatch_city                  0.051308
+notmatch_regions               0.001233
+notmatch_all                   0.051006
+doc_number                    -0.031184
+excess_amt                     0.019915
+excess                         0.027874
+missing_apartments             0.026528
+missing_basementarea           0.032798
+missing_yearsbuild             0.021695
+missing_commonarea             0.018023
+missing_elevators              0.028143
+missing_entrances              0.031442
+missing_floorsmax              0.031356
+missing_floorsmin              0.019544
+missing_landarea               0.025019
+missing_nonlivingapartments    0.017854
+missing_nonlivingarea          0.029648
+y                              1.000000
