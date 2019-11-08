@@ -3,9 +3,7 @@ os.chdir(r'D:\Users\NT80199\Desktop\Projects\project3\datasets')
 
 # Setups
 
-import numpy as np
 import pandas as pd
-import scipy as sp
 
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test.csv')
@@ -153,11 +151,19 @@ train = pd.concat([train, cat_encoded], axis=1)
 
 # Modeling: bagging
 
+
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import BaggingClassifier
+from sklearn.metrics import confusion_matrix
+
+X_train, X_test, y_train, y_test = train_test_split(
+        train, y, test_size=0.2, random_state=0)
 
 classifier = BaggingClassifier(base_estimator=None)
-classifier.fit(train, y)
-classifier.predict(train)
+classifier.fit(X_train, y_train)
+y_pred = classifier.predict(X_test)
+confusion_matrix(y_test, y_pred)
+
 
 
 
