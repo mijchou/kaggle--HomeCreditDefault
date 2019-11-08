@@ -156,13 +156,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import BaggingClassifier
 from sklearn.metrics import confusion_matrix
 
-X_train, X_test, y_train, y_test = train_test_split(
-        train, y, test_size=0.2, random_state=0)
+l = list()
 
-classifier = BaggingClassifier(base_estimator=None)
-classifier.fit(X_train, y_train)
-y_pred = classifier.predict(X_test)
-confusion_matrix(y_test, y_pred)
+for i in range(0, 10):
+    
+    X_train, X_test, y_train, y_test = train_test_split(
+            train, y, test_size=0.2)
+    
+    classifier = BaggingClassifier(base_estimator=None,
+                                   )
+    classifier.fit(X_train, y_train)
+    y_pred = classifier.predict(X_test)
+    confusion_matrix(y_test, y_pred)
 
 
 
